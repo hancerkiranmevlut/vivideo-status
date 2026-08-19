@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vivideo Status</title>
+  <meta name="description" content="Latest service status for Vivideo">
+  <meta name="theme-color" content="#161618">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="https://vivideo.ai/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #161618;
+      --card: #161618;
+      --border: #39393f;
+      --text: #ffffff;
+      --muted: #a1a1aa;
+      --row: #e4e4e7;
+      --teal: #1fa382;
+      --teal-deep: #0e493a;
+      --orange: #f5a524;
+      --red: #e5484d;
+      --btn-border: #cacace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .wrap {
+      width: 100%;
+      max-width: 718px;
+      margin: 0 auto;
+      padding: 16px 16px 64px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 36px;
+      margin-top: 8px;
+      gap: 12px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      height: 28px;
+    }
+
+    .logo img {
+      height: 28px;
+      width: 28px;
+      border-radius: 6px;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--btn-border);
+      background: transparent;
+      color: var(--text);
+      font: 500 14px/1 Inter, system-ui, sans-serif;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn:hover { background: rgba(255,255,255,0.06); }
+
+    .btn-primary {
+      background: #fff;
+      color: #161618;
+      border-color: #fff;
+    }
+
+    .btn-primary:hover { background: #f4f4f5; }
+
+    .banner {
+      margin-top: 24px;
+      border: 1px solid var(--teal);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .banner.down { border-color: var(--red); }
+    .banner.degraded { border-color: var(--orange); }
+
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      background: var(--teal-deep);
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .banner.down .banner-top { background: #4a1518; }
+    .banner.degraded .banner-top { background: #4a3210; }
+
+    .banner-bottom {
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text);
+      border-top: 1px solid rgba(31, 163, 130, 0.35);
+    }
+
+    .banner.down .banner-bottom { border-top-color: rgba(229, 72, 77, 0.35); }
+    .banner.degraded .banner-bottom { border-top-color: rgba(245, 165, 36, 0.35); }
+
+    .icon-check, .icon-alert {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .icon-check { background: var(--teal); }
+    .icon-alert { background: var(--red); }
+    .icon-warn { background: var(--orange); width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    .card {
+      margin-top: 24px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px 12px;
+      gap: 12px;
+    }
+
+    .card-head h2 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .range {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .range button {
+      appearance: none;
+      background: none;
+      border: 0;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 2px 4px;
+      font-size: 14px;
+    }
+
+    .range button:hover { color: var(--text); }
+    .range button:disabled { opacity: 0.35; cursor: default; }
+
+    .row {
+      padding: 16px 18px 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .row-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .row-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .row-left a {
+      color: var(--row);
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .row-left a:hover { text-decoration: underline; }
+
+    .info {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid #6b6b73;
+      color: #6b6b73;
+      font-size: 10px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      cursor: default;
+    }
+
+    .info:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      transform: translateX(-50%);
+      background: #2a2a2e;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      z-index: 3;
+    }
+
+    .uptime-label {
+      color: var(--muted);
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .bars {
+      display: flex;
+      gap: 1.5px;
+      height: 16px;
+    }
+
+    .bar {
+      flex: 1;
+      border-radius: 1px;
+      background: var(--teal);
+      min-width: 0;
+      position: relative;
+    }
+
+    .bar.down { background: var(--red); }
+    .bar.degraded { background: var(--orange); }
+
+    .bar:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      transform: translateX(-50%);
+      background: #2a2a2e;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .empty {
+      padding: 32px 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .wrap { padding: 12px 12px 48px; }
+      .btn { padding: 6px 8px; font-size: 13px; }
+      .row-left a { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <a class="logo" href="https://vivideo.ai" aria-label="Vivideo">
+        <img src="https://vivideo.ai/favicon.svg" alt="Vivideo">
+      </a>
+      <div class="actions">
+        <a class="btn" href="mailto:support@vivideo.ai?subject=Report%20a%20problem">Report a problem</a>
+        <a class="btn btn-primary" href="mailto:support@vivideo.ai?subject=Subscribe%20to%20status%20updates">Subscribe to updates</a>
+      </div>
+    </header>
+
+    <section id="banner" class="banner" hidden></section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>System status</h2>
+        <div class="range">
+          <button id="prev" type="button" aria-label="Previous period">&lt;</button>
+          <span id="range-label"></span>
+          <button id="next" type="button" aria-label="Next period">&gt;</button>
+        </div>
+      </div>
+      <div id="services"><div class="empty">Loading status…</div></div>
+    </section>
+  </div>
+
+  <script>
+    const DAYS = 90;
+    const FALLBACK = [
+      { name: "Vivideo Landing", url: "https://vivideo.ai", slug: "vivideo-landing", status: "up", uptime: "100.00%", dailyMinutesDown: {} },
+      { name: "Vivideo Web App", url: "https://app.vivideo.ai", slug: "vivideo-web-app", status: "up", uptime: "100.00%", dailyMinutesDown: {} },
+      { name: "Vivideo Developers", url: "https://developers.vivideo.ai", slug: "vivideo-developers", status: "up", uptime: "100.00%", dailyMinutesDown: {} },
+      { name: "Vivideo Partners", url: "https://partners.vivideo.ai", slug: "vivideo-partners", status: "up", uptime: "100.00%", dailyMinutesDown: {} }
+    ];
+
+    let services = [];
+    let offset = 0;
+
+    const fmtDay = (d) => d.toISOString().slice(0, 10);
+    const fmtMonth = (d) => d.toLocaleString("en-US", { month: "short", year: "numeric" });
+
+    function rangeDates() {
+      const end = new Date();
+      end.setHours(12, 0, 0, 0);
+      end.setDate(end.getDate() - offset * DAYS);
+      const start = new Date(end);
+      start.setDate(start.getDate() - (DAYS - 1));
+      return { start, end };
+    }
+
+    function dayStatus(daily, date) {
+      const key = fmtDay(date);
+      const mins = daily && daily[key];
+      if (mins == null) return "up";
+      if (mins >= 60) return "down";
+      if (mins > 0) return "degraded";
+      return "up";
+    }
+
+    function overall(list) {
+      if (list.some((s) => s.status === "down")) return "down";
+      if (list.some((s) => s.status === "degraded")) return "degraded";
+      return "up";
+    }
+
+    function checkSvg() {
+      return '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.2l2 2 4-4.4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    }
+    function xSvg() {
+      return '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 3l4 4M7 3L3 7" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>';
+    }
+    function warnSvg() {
+      return '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2.4v3.4M5 7.4h.01" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>';
+    }
+
+    function renderBanner(state) {
+      const el = document.getElementById("banner");
+      el.hidden = false;
+      el.className = "banner " + (state === "up" ? "" : state);
+      if (state === "down") {
+        el.innerHTML = '<div class="banner-top"><span class="icon-alert">' + xSvg() + '</span>We are experiencing issues</div><div class="banner-bottom">Some Vivideo services are currently unavailable.</div>';
+      } else if (state === "degraded") {
+        el.innerHTML = '<div class="banner-top"><span class="icon-warn">' + warnSvg() + '</span>Some systems are degraded</div><div class="banner-bottom">We are aware of performance issues affecting some services.</div>';
+      } else {
+        el.innerHTML = '<div class="banner-top"><span class="icon-check">' + checkSvg() + '</span>We’re fully operational</div><div class="banner-bottom">We’re not aware of any issues affecting our systems.</div>';
+      }
+    }
+
+    function render() {
+      const { start, end } = rangeDates();
+      document.getElementById("range-label").textContent = fmtMonth(start) + "–" + fmtMonth(end);
+      document.getElementById("prev").disabled = false;
+      document.getElementById("next").disabled = offset === 0;
+
+      const root = document.getElementById("services");
+      root.innerHTML = services.map((s) => {
+        const daily = s.dailyMinutesDown || {};
+        const bars = [];
+        for (let i = 0; i < DAYS; i++) {
+          const d = new Date(start);
+          d.setDate(start.getDate() + i);
+          const st = dayStatus(daily, d);
+          const label = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+          const tip = st === "down" ? label + " · Downtime" : st === "degraded" ? label + " · Degraded" : label + " · Operational";
+          bars.push('<div class="bar ' + (st === "up" ? "" : st) + '" data-tip="' + tip + '"></div>');
+        }
+        const icon = s.status === "down" ? '<span class="icon-alert">' + xSvg() + "</span>" : s.status === "degraded" ? '<span class="icon-warn">' + warnSvg() + "</span>" : '<span class="icon-check">' + checkSvg() + "</span>";
+        const pct = String(s.uptime || "100.00%").replace(".00%", "%");
+        return (
+          '<div class="row">' +
+            '<div class="row-top">' +
+              '<div class="row-left">' + icon +
+                '<a href="' + s.url + '" target="_blank" rel="noopener">' + s.url + "</a>" +
+                '<span class="info" data-tip="' + s.name + '">i</span>' +
+              "</div>" +
+              '<div class="uptime-label">' + pct + " uptime</div>" +
+            "</div>" +
+            '<div class="bars">' + bars.join("") + "</div>" +
+          "</div>"
+        );
+      }).join("");
+    }
+
+    async function load() {
+      try {
+        const res = await fetch("./summary.json", { cache: "no-store" });
+        if (!res.ok) throw new Error("missing summary");
+        services = await res.json();
+      } catch (e) {
+        services = FALLBACK;
+      }
+      renderBanner(overall(services));
+      render();
+    }
+
+    document.getElementById("prev").onclick = () => { offset += 1; render(); };
+    document.getElementById("next").onclick = () => { if (offset > 0) offset -= 1; render(); };
+    load();
+  </script>
+</body>
+</html>

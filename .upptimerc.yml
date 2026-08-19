@@ -15,8 +15,8 @@ status-website:
   cname: status.vivideo.ai
   logoUrl: https://vivideo.ai/favicon.svg
   name: Vivideo Status
-  introTitle: "**Vivideo Status** shows the real-time uptime of Vivideo services."
-  introMessage: This is the official status page for [Vivideo](https://vivideo.ai). It uses **real-time** data and is powered entirely by GitHub Actions, Issues, and Pages. No server required.
+  introTitle: "Vivideo Status"
+  introMessage: Latest service status for Vivideo.
   navbar:
     - title: Status
       href: /
