@@ -1,6 +1,6 @@
 # [Vivideo Status](https://status.vivideo.ai)
 
-This repository contains the open-source uptime monitor and status page for [hancerkiranmevlut](https://status.vivideo.ai), powered by [Upptime](https://github.com/upptime/upptime).
+This repository contains the open-source uptime monitor and status page for [Vivideo](https://status.vivideo.ai), powered by [Upptime](https://github.com/upptime/upptime).
 
 [![Uptime CI](https://github.com/hancerkiranmevlut/vivideo-status/workflows/Uptime%20CI/badge.svg)](https://github.com/hancerkiranmevlut/vivideo-status/actions/workflows/uptime.yml)
 [![Response Time CI](https://github.com/hancerkiranmevlut/vivideo-status/workflows/Response%20Time%20CI/badge.svg)](https://github.com/hancerkiranmevlut/vivideo-status/actions/workflows/response-time.yml)
