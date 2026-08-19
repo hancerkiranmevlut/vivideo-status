@@ -292,10 +292,154 @@
       font-size: 14px;
     }
 
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 14px 18px 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+
+    .swatch.up { background: var(--teal); }
+    .swatch.degraded { background: var(--orange); }
+    .swatch.down { background: var(--red); }
+
+    .incidents {
+      margin-top: 32px;
+    }
+
+    .incidents h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .incident-empty {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .incident {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
+    }
+
+    .incident-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .incident-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .incident-date {
+      color: var(--muted);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .incident-meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .help {
+      margin-top: 28px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .help h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .help p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .brand img {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    .copy {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
     @media (max-width: 640px) {
       .wrap { padding: 12px 12px 48px; }
       .btn { padding: 6px 8px; font-size: 13px; }
       .row-left a { font-size: 13px; }
+      .help { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -323,7 +467,42 @@
         </div>
       </div>
       <div id="services"><div class="empty">Loading status…</div></div>
+      <div class="legend">
+        <span><i class="swatch up"></i>Operational</span>
+        <span><i class="swatch degraded"></i>Degraded</span>
+        <span><i class="swatch down"></i>Downtime</span>
+      </div>
     </section>
+
+    <section class="incidents">
+      <h2>Past incidents</h2>
+      <div id="incidents"></div>
+    </section>
+
+    <section class="help">
+      <div>
+        <h3>Need help?</h3>
+        <p>If something looks off, our team is here. Email support and we’ll take a look.</p>
+      </div>
+      <a class="btn" href="mailto:support@vivideo.ai?subject=Status%20page%20help">Contact support</a>
+    </section>
+
+    <footer>
+      <div class="footer-top">
+        <a class="brand" href="https://vivideo.ai">
+          <img src="https://vivideo.ai/favicon.svg" alt="">
+          Vivideo
+        </a>
+        <nav class="footer-links">
+          <a href="https://vivideo.ai">Website</a>
+          <a href="https://app.vivideo.ai">App</a>
+          <a href="https://vivideo.ai/privacy-policy">Privacy</a>
+          <a href="https://vivideo.ai/terms-of-service">Terms</a>
+          <a href="mailto:support@vivideo.ai">Support</a>
+        </nav>
+      </div>
+      <p class="copy">© <span id="year"></span> Vivideo. All rights reserved.</p>
+    </footer>
   </div>
 
   <script>
@@ -433,8 +612,43 @@
       }
       renderBanner(overall(services));
       render();
+      renderIncidents();
     }
 
+    function renderIncidents() {
+      const items = [];
+      services.forEach((s) => {
+        const daily = s.dailyMinutesDown || {};
+        Object.keys(daily).forEach((day) => {
+          const mins = daily[day];
+          if (!mins) return;
+          items.push({
+            day,
+            mins,
+            name: s.name,
+            url: s.url,
+            kind: mins >= 60 ? "Downtime" : "Degraded performance"
+          });
+        });
+      });
+      items.sort((a, b) => (a.day < b.day ? 1 : -1));
+      const el = document.getElementById("incidents");
+      if (!items.length) {
+        el.innerHTML = '<div class="incident-empty">No incidents reported.</div>';
+        return;
+      }
+      el.innerHTML = items.map((item) => {
+        const date = new Date(item.day + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+        return (
+          '<article class="incident">' +
+            '<div class="incident-top"><div class="incident-title">' + item.kind + " on " + item.name + '</div><div class="incident-date">' + date + "</div></div>" +
+            '<div class="incident-meta">' + item.url + " · " + item.mins + " minutes affected</div>" +
+          "</article>"
+        );
+      }).join("");
+    }
+
+    document.getElementById("year").textContent = String(new Date().getFullYear());
     document.getElementById("prev").onclick = () => { offset += 1; render(); };
     document.getElementById("next").onclick = () => { if (offset > 0) offset -= 1; render(); };
     load();
